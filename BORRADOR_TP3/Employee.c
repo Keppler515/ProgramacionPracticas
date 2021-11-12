@@ -117,3 +117,29 @@ int employee_getId(Employee* this,int* id)
 	return 0;
 }
 
+int employee_comparaEmpleados(void* empleado1, void* empleado2)
+{
+	int retorno = 0;
+
+	Employee* eAuxA;
+	Employee* eAuxB;
+	eAuxA = (Employee*) empleado1;
+	eAuxB = (Employee*) empleado2;
+	char nombreAuxA[128];
+	char nombreAuxB[128];
+
+	if(employee_getNombre(eAuxA, nombreAuxA)==0 && employee_getNombre(eAuxB, nombreAuxB)==0)
+	{
+		if(strncmp(nombreAuxA,nombreAuxB,128)>0)
+		{
+			retorno = 1;
+		}
+		if(strncmp(nombreAuxA,nombreAuxB,128)<0)
+		{
+			retorno = -1;
+		}
+	}
+
+
+	return retorno;
+}

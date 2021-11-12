@@ -33,23 +33,39 @@ int main()
     do{
 
     	employee_menu(&option);
+    	printf("\n");
 
         switch(option)
         {
             case 1:
-                controller_loadFromText("data.csv",listaEmpleados);
+                if(controller_loadFromText("data.csv",listaEmpleados)==0)
+                {
+                	puts("Archivo cargado en modo texto\n");
+                }
                 break;
             case 2:
-            	controller_loadFromBinary("data.csv",listaEmpleados);
+            	if(controller_loadFromBinary("data.csv",listaEmpleados)==0)
+            	{
+            		puts("Archivo cargado en modo binario\n");
+            	}
             	break;
             case 3:
-            	controller_addEmployee(listaEmpleados);
+            	if(controller_addEmployee(listaEmpleados)==0)
+            	{
+            		puts("Empleado agregado correctamente\n");
+            	}
 				break;
 			case 4:
-				controller_editEmployee(listaEmpleados);
+				if(controller_editEmployee(listaEmpleados)==0)
+				{
+					puts("Datos modificados correctamente\n");
+				}
 				break;
 			case 5:
-				controller_removeEmployee(listaEmpleados);
+				if(controller_removeEmployee(listaEmpleados)==0)
+				{
+					puts("Datos eliminados correctamente\n");
+				}
 				break;
 			case 6:
 				controller_ListEmployee(listaEmpleados);
@@ -58,13 +74,17 @@ int main()
 				controller_sortEmployee(listaEmpleados);
 				break;
 			case 8:
-				controller_saveAsText("dataGeneradoT.csv",listaEmpleados);
+				if(controller_saveAsText("dataGeneradoT.csv",listaEmpleados)==0)
+				{
+					puts("Datos guardados correctamente en modo texto\n");
+				}
 				break;
 			case 9:
 				controller_saveAsBinary("dataGeneradoB.csv",listaEmpleados);
 				break;
 			default:
 				puts("Terminado");
+				ll_deleteLinkedList(listaEmpleados);
 				break;
         }
     }while(option != 10);
