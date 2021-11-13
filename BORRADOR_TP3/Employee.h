@@ -27,5 +27,6 @@ int employee_setSueldo(Employee* this,int sueldo);
 int employee_getSueldo(Employee* this,int* sueldo);
 
 int employee_comparaEmpleados(void* empleado1, void* empleado2);
+int employee_comparaEmpleadosID(void* empleado1, void* empleado2);
 
 #endif // employee_H_INCLUDED

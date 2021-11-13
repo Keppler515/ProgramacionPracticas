@@ -249,7 +249,37 @@ int utn_getText(char pResultado[], int len, char* mensaje, char* mensajeError)
     return retorno;
 }
 
+int utn_getTextAlfanumerico(char pResultado[], int len, char* mensaje, char* mensajeError)
+{
+    int retorno = -1;
 
+	if(pResultado != NULL && mensaje != NULL && mensajeError != NULL)
+    {
+		while(1)
+		{
+			printf("%s",mensaje);
+
+			if(myGets(pResultado,len)==0)
+			{
+				if(esAlfanumerica(pResultado)==0)
+				{
+					retorno = 0;
+					break;
+				}
+				else
+				{
+					printf("%s", mensajeError);
+				}
+			}
+			else
+			{
+				printf("%s", mensajeError);
+			}
+
+		}
+    }
+    return retorno;
+}
 
 int esNumerica(char cadena[])
 {
@@ -311,7 +341,7 @@ int esAlfanumerica(char cadena[])
 	{
 		while(cadena[i]!='\0')
 		{
-			if(cadena[i]<'0' || (cadena[i]>'9' && cadena[i]<'A') || (cadena[i]>'Z' && cadena[i]<'a') || cadena[i]>'z')
+			if(cadena[i]<'.' || (cadena[i]>'.' && cadena[i]<'0') || (cadena[i]>'9' && cadena[i]<'A') || (cadena[i]>'Z' && cadena[i]<'a') || cadena[i]>'z')
 			{
 				retorno = -2;
 				break;

@@ -22,6 +22,7 @@ int utn_getNumeroFlotante(float* pResultado, char* mensaje, char* mensajeError);
 int utn_getCaracter(char* pResultado, char* mensaje, char* mensajeError, char minimo, char maximo, int reintentos);
 int myGets(char pResultado[], int len);
 int utn_getText(char pResultado[], int len, char* mensaje, char* mensajeError);
+int utn_getTextAlfanumerico(char pResultado[], int len, char* mensaje, char* mensajeError);
 
 int esNumerica(char cadena[]);
 int esTexto(char cadena[]);

@@ -17,16 +17,20 @@
 int controller_loadFromText(char* path , LinkedList* pArrayListEmployee)
 {
 	int retorno = -1;
+	FILE* pArch;
 
 	if(path!=NULL && pArrayListEmployee!=NULL)
 	{
-		FILE* pArch = fopen(path,"r");
-
-		parser_EmployeeFromText(pArch, pArrayListEmployee);
-
-		fclose(pArch);
-
-		retorno = 0;
+		if((pArch = fopen(path,"r"))!=NULL)
+		{
+			parser_EmployeeFromText(pArch, pArrayListEmployee);
+			fclose(pArch);
+			retorno = 0;
+		}
+		else
+		{
+			puts("El archivo no puede ser cargado o no existe\n");
+		}
 	}
 
     return retorno;
@@ -42,15 +46,20 @@ int controller_loadFromText(char* path , LinkedList* pArrayListEmployee)
 int controller_loadFromBinary(char* path , LinkedList* pArrayListEmployee)
 {
 	int retorno = -1;
+	FILE* pArch;
 
 	if(path!=NULL && pArrayListEmployee!=NULL)
 	{
-		FILE* pArch = fopen(path,"rb");
-
-		parser_EmployeeFromBinary(pArch, pArrayListEmployee);
-
-		fclose(pArch);
-		retorno = 0;
+		if((pArch = fopen(path,"rb"))!=NULL)
+		{
+			parser_EmployeeFromBinary(pArch, pArrayListEmployee);
+			fclose(pArch);
+			retorno = 0;
+		}
+		else
+		{
+			puts("El archivo no puede ser cargado o no existe\n");
+		}
 	}
     return retorno;
 }
@@ -113,6 +122,7 @@ int controller_editEmployee(LinkedList* pArrayListEmployee)
 	int horasAux;
 	int sueldoAux;
 	int retorno = -1;
+	int flagExiste = 0;
 	Employee* aux;
 
 	if(pArrayListEmployee!=NULL)
@@ -127,6 +137,7 @@ int controller_editEmployee(LinkedList* pArrayListEmployee)
 
 				if(idAux == idAuxBuscado)
 				{
+					flagExiste = 1;
 					printf(	"\nNombre: %s\n"
 							"Horas: %d\n"
 							"Sueldo: %d\n"
@@ -136,40 +147,44 @@ int controller_editEmployee(LinkedList* pArrayListEmployee)
 			}
 		}
 
-
-		if(utn_getNumero(&opcionAux,"\nDato a modificar:\n"
-									"1) Nombre\n"
-									"2) Horas\n"
-									"3) Sueldo\n", "Err. edit2")==0)
+		if(flagExiste==1)
 		{
-
-			switch(opcionAux)
+			if(utn_getNumero(&opcionAux,"\nDato a modificar:\n"
+										"1) Nombre\n"
+										"2) Horas\n"
+										"3) Sueldo\n", "Err. edit2")==0)
 			{
-				case 1:
-					if(	utn_getText(nombreAux, 128, "\nNuevo nombre: ", "Mal")==0)
-					{
-						employee_setNombre(aux, nombreAux);
-						retorno = 0;
-					}
-					break;
 
-				case 2:
-					if(utn_getNumero(&horasAux, "Cantidad de horas: ", "Maaal")==0)
-					{
-						employee_setHorasTrabajadas(aux, horasAux);
-						retorno = 0;
-					}
-					break;
+				switch(opcionAux)
+				{
+					case 1:
+						if(	utn_getText(nombreAux, 128, "\nNuevo nombre: ", "Mal")==0)
+						{
+							employee_setNombre(aux, nombreAux);
+							retorno = 0;
+						}
+						break;
 
-				case 3:
-					if(utn_getNumero(&sueldoAux, "Nuevo Sueldo: ", "Moool")==0)
-					{
-						employee_setSueldo(aux, sueldoAux);
-						retorno = 0;
-					}
-					break;
+					case 2:
+						if(utn_getNumero(&horasAux, "Cantidad de horas: ", "Maaal")==0)
+						{
+							employee_setHorasTrabajadas(aux, horasAux);
+							retorno = 0;
+						}
+						break;
+
+					case 3:
+						if(utn_getNumero(&sueldoAux, "Nuevo Sueldo: ", "Moool")==0)
+						{
+							employee_setSueldo(aux, sueldoAux);
+							retorno = 0;
+						}
+						break;
+				}
 			}
 		}
+		else
+			puts("\nID inexistente o eliminado\n");
 
 }
     return retorno;
@@ -190,13 +205,13 @@ int controller_removeEmployee(LinkedList* pArrayListEmployee)
 	int indexAux;
 	int opcionAux;
 	int retorno = -1;
+	int flagExiste = 0;
 	Employee* aux;
 
 	if(pArrayListEmployee!=NULL)
 	{
-		if(utn_getNumero(&idAuxBuscado, "ID a eliminar", "Err. remove")==0)
+		if(utn_getNumero(&idAuxBuscado, "ID a eliminar: ", "Err")==0)
 		{
-
 			for(i=0;i<ll_len(pArrayListEmployee);i++)
 			{
 				aux = ll_get(pArrayListEmployee, i);
@@ -206,6 +221,7 @@ int controller_removeEmployee(LinkedList* pArrayListEmployee)
 				if(idAuxBuscado == idAux)
 				{
 					indexAux = i;
+					flagExiste = 1;
 					printf(	"Nombre: %s\n"
 							"Horas: %d\n"
 							"Sueldo: %d\n"
@@ -214,22 +230,32 @@ int controller_removeEmployee(LinkedList* pArrayListEmployee)
 				}
 			}
 
-			utn_getNumero(&opcionAux, 	"¿Eliminar?"
-										"1) Confirma"
-										"2) Cancela", "Err. remove2");
-
-			switch(opcionAux)
+			if(flagExiste==1)
 			{
-			case 1:
-				employee_delete(aux);
-				ll_remove(pArrayListEmployee, indexAux);
-				retorno = 0;
-				break;
+				do
+				{
+					if(utn_getNumero(&opcionAux,"\n¿Eliminar?\n"
+												"1) Confirma\n"
+												"2) Cancela\n", "Err. remove2")==0)
+					{
+						switch(opcionAux)
+						{
+						case 1:
+							employee_delete(aux);
+							ll_remove(pArrayListEmployee, indexAux);
+							retorno = 0;
+							break;
 
-			case 2:
-				puts("Cancelado\n");
-				break;
+						case 2:
+							puts("Cancelado\n");
+							break;
+						}
+					}
+					break;
+				}while(opcionAux!=1||opcionAux!=2);
 			}
+			else
+				puts("\nID inexistente o eliminado\n");
 		}
 	}
 
@@ -274,14 +300,46 @@ int controller_ListEmployee(LinkedList* pArrayListEmployee)
 int controller_sortEmployee(LinkedList* pArrayListEmployee)
 {
 	int retorno = -1;
+	int opcion;
 
 	if(pArrayListEmployee!=NULL)
 	{
-		puts("\nOrdenando...\n");
-		ll_sort(pArrayListEmployee, employee_comparaEmpleados, 1);
-		puts("Lista ordenada\n");
-		retorno = 0;
+		do
+		{
+			if(utn_getNumero(&opcion, "1- Alfabeticamente.\n2- ID.\n", "Err.")==0 && opcion>=1 && opcion<3)
+			{
+				switch(opcion)
+				{
+					case 1:
+					{
+						//NOTA: OPCION DESC TARDA MUUUUCHO. NO SE SI FUNCIONA
+						puts("\nOrdenando...\n");
+						ll_sort(pArrayListEmployee, employee_comparaEmpleados, 1);
+						puts("Lista ordenada\n");
+						retorno = 0;
+						break;
+					}
+					break;
+
+					case 2:
+					{
+						puts("\nOrdenando...\n");
+						ll_sort(pArrayListEmployee, employee_comparaEmpleadosID, 1);
+						puts("Lista ordenada\n");
+						retorno = 0;
+						break;
+					}
+					break;
+				}
+				break;
+			}
+			else
+			{
+				puts("Opcion invalida\n");
+			}
+		}while(opcion!=0 || opcion!=1);
 	}
+
     return retorno;
 }
 
@@ -299,8 +357,9 @@ int controller_saveAsText(char* path , LinkedList* pArrayListEmployee)
 	Employee* aux;
 	FILE* pArch = fopen(path,"w");
 
-	if(pArch!=NULL)
+	if(path!=NULL && pArch!=NULL)
 	{
+
 		fprintf(pArch,"ID Nombre Horas Sueldo\n");
 
 		for(i=0;i<ll_len(pArrayListEmployee);i++)
@@ -326,8 +385,50 @@ int controller_saveAsText(char* path , LinkedList* pArrayListEmployee)
  */
 int controller_saveAsBinary(char* path , LinkedList* pArrayListEmployee)
 {
-    return 1;
+	int retorno = -1;
+	int i;
+	Employee* aux;
+	FILE* pArch = fopen(path,"wb");
+
+	if(path!=NULL && pArch!=NULL)
+	{
+		for(i=0;i<ll_len(pArrayListEmployee);i++)
+		{
+			aux = ll_get(pArrayListEmployee, i);
+
+			fwrite(aux,sizeof(Employee),1,pArch);
+		}
+
+		fclose(pArch);
+		retorno = 0;
+	}
+
+	return retorno;
+}
+
+/*
+int controller_buscarId(LinkedList* pArrayListEmployee, int id)
+{
+	int retorno = -1;
+	int i;
+	Employee* eAux;
+	int idAux;
+
+	for(i=0;i<ll_len(pArrayListEmployee);i++)
+	{
+		eAux = ll_get(pArrayListEmployee, i);
+
+		if(eAux!=NULL)
+		{
+			if(employee_getId(pArrayListEmployee, &idAux)==0)
+			{
+
+			}
+		}
+	}
+
+	return
 }
 
 
-
+*/

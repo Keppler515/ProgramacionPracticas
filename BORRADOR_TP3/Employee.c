@@ -40,7 +40,10 @@ Employee* employee_newParametros(char* idStr,char* nombreStr,char* horasTrabajad
 
 void employee_delete(Employee* this)
 {
-	free(this);
+	if(this!=NULL)
+	{
+		free(this);
+	}
 }
 
 
@@ -121,23 +124,35 @@ int employee_comparaEmpleados(void* empleado1, void* empleado2)
 {
 	int retorno = 0;
 
-	Employee* eAuxA;
-	Employee* eAuxB;
-	eAuxA = (Employee*) empleado1;
-	eAuxB = (Employee*) empleado2;
+	Employee* eAuxA = (Employee*) empleado1;
+	Employee* eAuxB = (Employee*) empleado2;
 	char nombreAuxA[128];
 	char nombreAuxB[128];
 
 	if(employee_getNombre(eAuxA, nombreAuxA)==0 && employee_getNombre(eAuxB, nombreAuxB)==0)
 	{
-		if(strncmp(nombreAuxA,nombreAuxB,128)>0)
-		{
+		retorno = strcmp(nombreAuxA,nombreAuxB);
+	}
+
+
+	return retorno;
+}
+
+int employee_comparaEmpleadosID(void* empleado1, void* empleado2)
+{
+	int retorno = 0;
+
+	Employee* eAuxA = (Employee*) empleado1;
+	Employee* eAuxB = (Employee*) empleado2;
+	int idAuxA = eAuxA->id;
+	int idAuxB = eAuxB->id;
+
+	if(employee_getId(eAuxA, &idAuxA)==0 && employee_getId(eAuxB, &idAuxB)==0)
+	{
+		if(idAuxA>idAuxB)
 			retorno = 1;
-		}
-		if(strncmp(nombreAuxA,nombreAuxB,128)<0)
-		{
+		else
 			retorno = -1;
-		}
 	}
 
 
